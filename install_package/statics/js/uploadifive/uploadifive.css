@@ -1,0 +1,28 @@
+#btupload,.uploadifive-button{background:url(images/btn.png) no-repeat;float:left;margin-right:10px;width:75px;height:28px;line-height:28px;font-weight:700;color:#fff;background-position:left bottom}
+#btupload{background-position-y:top;border:0}
+.uploadifive-queue-item{margin:5px;padding:4px;border:solid 1px #e8e8e8;background-color:#f7f7f7;overflow:hidden}
+.uploadifive-queue-item .close{font-size:0;display:block;height:16px;width:16px;background-image:url(images/cross.png);background-repeat:no-repeat;background-position:0 4px;float:right}
+.uploadifive-queue-item .close:hover{background-position:0 bottom}
+.uploadifive-queue-item .progress{height:2px;margin-top:5px;width:100%}
+.uploadifive-queue-item .progress-bar{width:0%;background-color:#00f;height:2px}
+.uploadifive-queue-item .fileinfo{color:#0e774a}
+.red{color:red}
+.uploadifive-queue-item .filename{font-size:8pt;font-weight:700;color:#555}
+.upload-errmsg{display:none;line-height:28px;border:1px solid red;padding:0 10px;margin-top:10px;color:red;background:#ffebee}
+.img-wrap{border:1px solid #eee;text-align:center;overflow:hidden;background:#fff}
+.img-wrap a{display:table-cell;vertical-align:middle;text-align:center}
+.attachment-list{overflow:hidden}
+.attachment-list li{width:25%;overflow:hidden;padding:10px 0;float:left}
+.attachment-list .img-wrap{width:104px;height:94px;overflow:hidden;margin:auto}
+.attachment-list .img-wrap{text-align:center;overflow:hidden;background:#fff;border:none;position:relative}
+.attachment-list .img-wrap a{display:table-cell;vertical-align:middle;text-align:center;border:1px solid #eee;width:101px;height:91px}
+.attachment-list .img-wrap a.on,.attachment-list .img-wrap a:hover{border-color:#d0def1;background:#f3f6fa}
+.attachment-list .img-wrap a.off .icon{background:url(images/off.png) no-repeat;height:17px;bottom:5px;right:3px;z-index:100;position:absolute;overflow:hidden;width:98px}
+.attachment-list .img-wrap a.on .icon{background:url(../../images/msg_bg.png) no-repeat left -249px;width:16px;height:18px;bottom:4px;right:3px;z-index:100;position:absolute;overflow:hidden}
+.video-list li{width:25%;padding:10px 0;float:left}
+.video-list .img-wrap{width:104px;height:110px;margin:auto}
+.video-list .img-wrap{text-align:center;background:#fff;border:none;position:relative}
+.video-list .img-wrap a{display:table-cell;vertical-align:middle;text-align:center;border:1px solid #eee;width:101px;height:91px}
+.video-list .img-wrap a.on,.video-list .img-wrap a:hover{border-color:#d0def1;background:#f3f6fa}
+.video-list .img-wrap a.off .icon{background:url(images/off.png) no-repeat;height:17px;bottom:5px;right:3px;z-index:100;position:absolute;overflow:hidden;width:98px}
+.video-list .img-wrap a.on .icon{background:url(../../images/msg_bg.png) no-repeat left -249px;width:16px;height:18px;bottom:4px;right:3px;z-index:100;position:absolute;overflow:hidden}
