@@ -1,0 +1,1 @@
+INSERT INTO `v9_module` (`module`, `name`, `url`, `iscore`, `version`, `description`, `setting`, `listorder`, `disabled`, `installdate`, `updatedate`) VALUES ('demo', '示例模块', 'demo/', 0, '1.0', '示例模块', '', 0, 0, NOW(), NOW());

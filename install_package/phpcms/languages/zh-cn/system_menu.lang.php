@@ -454,5 +454,16 @@ $LANG['video_inputinfo'] = '视频配置';
 $LANG['complete_info'] = '填写资料'; 
 $LANG['clear_data'] = '一键清理';
 $LANG['player_manage'] = '播放器管理';
-$LANG['video_upload'] = '视频上传'; 
+$LANG['video_upload'] = '视频上传';
+$LANG['menu_booking'] = '预约管理';
+$LANG['menu_booking_add'] = '添加预约';
+$LANG['menu_booking_edit'] = '编辑预约';
+$LANG['menu_booking_delete'] = '删除预约';
+$LANG['module_extend'] = '扩展模块';
+
+$LANG['module_extend'] = '扩展模块';
+$LANG['menu_demo'] = '示例模块';
+$LANG['menu_demo_add'] = '添加示例模块';
+$LANG['menu_demo_edit'] = '编辑示例模块';
+$LANG['menu_demo_delete'] = '删除示例模块';
 ?>

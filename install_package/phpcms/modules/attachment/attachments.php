@@ -43,7 +43,7 @@ class attachments
 		$attachment->set_userid($this->userid);
 		$a = $attachment->upload('upload', $site_allowext);
 		if ($a) {
-			$res = array('uploaded' => 1, 'fileName' => $attachment->uploadedfiles[0]['filename'], 'url' => $this->upload_url . $attachment->uploadedfiles[0]['filepath']);
+			$res = array('uploaded' => 1, 'fileName' => $attachment->uploadedfiles[0]['filename'], 'url' => storage_url($attachment->uploadedfiles[0]['filepath']));
 			$this->_upload_json($a[0], $res['url'], $res['fileName']);
 		} else {
 			$res = array('uploaded' => 0, 'error' => array('message' => $attachment->error()));
@@ -86,7 +86,7 @@ class attachments
 				}
 				echo json_encode(array(
 					'aid' => $aids[0],
-					'url' => $this->upload_url . $attachment->uploadedfiles[0]['filepath'],
+					'url' => storage_url($attachment->uploadedfiles[0]['filepath']),
 					'fileext' => $fileext,
 					'filename' => $filename,
 					'is_image' => $attachment->uploadedfiles[0]['isimage']
@@ -191,6 +191,7 @@ class attachments
 	 */
 	public function album_load()
 	{
+		require_once PC_PATH.'libs/classes/storage/storage_factory.class.php';
 		if (!$this->admin_username) return false;
 		$where = $uploadtime = '';
 		$this->att_db = pc_base::load_model('attachment_model');
@@ -213,7 +214,7 @@ class attachments
 		foreach ($infos as $n => $v) {
 			$ext = fileext($v['filepath']);
 			if (in_array($ext, $this->imgext)) {
-				$infos[$n]['src'] = $this->upload_url . $v['filepath'];
+				$infos[$n]['src'] = storage_url($v['filepath']);
 				$infos[$n]['width'] = '80';
 			} else {
 				$infos[$n]['src'] = file_icon($v['filepath']);
@@ -229,14 +230,30 @@ class attachments
 	 */
 	public function album_dir()
 	{
+		require_once PC_PATH.'libs/classes/storage/storage_factory.class.php';
 		if (!$this->admin_username) return false;
 		if ($_GET['args']) extract(parse_upload_args($_GET['args']));
 		$dir = isset($_GET['dir']) && trim($_GET['dir']) ? str_replace(array('..\\', '../', './', '.\\', '..', '.*'), '', trim($_GET['dir'])) : '';
-		$filepath = $this->upload_path . $dir;
-		$list = glob($filepath . '/' . '*');
-		if (!empty($list)) rsort($list);
-		$local = str_replace(array(PC_PATH, PHPCMS_PATH, DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR), array('', '', DIRECTORY_SEPARATOR), $filepath);
-		$url = ($dir == '.' || $dir == '') ? $this->upload_url : $this->upload_url . str_replace('.', '', $dir) . '/';
+		$storage = storage_factory::get();
+		$items = array();
+		if ($storage instanceof disk_storage) {
+			// 磁盘驱动：扫描本地目录
+			$filepath = $this->upload_path . $dir;
+			$list = glob($filepath . '/' . '*');
+			if (!empty($list)) rsort($list);
+			$local = str_replace(array(PC_PATH, PHPCMS_PATH, DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR), array('', '', DIRECTORY_SEPARATOR), $filepath);
+			$url = ($dir == '.' || $dir == '') ? $this->upload_url : $this->upload_url . str_replace('.', '', $dir) . '/';
+			foreach ($list as $v) {
+				$items[] = array('is_dir' => is_dir($v), 'name' => basename($v), 'url' => $url . basename($v));
+			}
+		} else {
+			// 远程驱动（MinIO/OSS/COS/七牛）：列出对象
+			$dir = ($dir == '.' || $dir == '') ? '' : rtrim($dir, '/') . '/';
+			$res = $storage->list($dir, '/');
+			foreach ($res['dirs'] as $d) $items[] = array('is_dir' => true, 'name' => basename(rtrim($d, '/')), 'url' => '');
+			foreach ($res['files'] as $f) $items[] = array('is_dir' => false, 'name' => $f['name'], 'url' => storage_url($f['path']));
+			$local = ($dir == '') ? '存储桶根目录 /' : $dir;
+		}
 		$show_header = true;
 		include $this->admin_tpl('album_dir');
 	}

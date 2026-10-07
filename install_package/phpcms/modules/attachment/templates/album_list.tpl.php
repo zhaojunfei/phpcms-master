@@ -21,7 +21,7 @@
 <?php foreach($infos as $r) {?>
 <li>
 	<div class="img-wrap">
-		<a href="javascript:;" onclick="javascript:album_cancel(this,'<?php echo $r['aid']?>','<?php echo $this->upload_url.$r['filepath']?>')"><div class="icon"></div><img src="<?php echo $r['src']?>" width="<?php echo $r['width']?>" path="<?php echo $this->upload_url.$r['filepath']?>" title="<?php echo $r['filename']?>"/></a>
+		<a href="javascript:;" onclick="javascript:album_cancel(this,'<?php echo $r['aid']?>','<?php echo $r['src']?>')"><div class="icon"></div><img src="<?php echo $r['src']?>" width="<?php echo $r['width']?>" path="<?php echo $r['src']?>" title="<?php echo $r['filename']?>"/></a>
 	</div>
 </li>
 <?php } ?>

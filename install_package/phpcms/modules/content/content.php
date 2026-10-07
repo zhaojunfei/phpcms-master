@@ -92,6 +92,20 @@ class content extends admin {
 				$posids = $_GET['posids']==1 ? intval($_GET['posids']) : 0;
 				$where .= " AND `posids` = '$posids'";
 			}
+			//GEO 搜索：按地区筛选
+			if(isset($_GET['area_id']) && $_GET['area_id']!=='') {
+				$area_id = intval($_GET['area_id']);
+				$where .= " AND `area_id` = '$area_id'";
+			}
+			//GEO 搜索：按周边坐标检索（中心点经纬度 + 半径，单位公里）
+			if(isset($_GET['lng']) && isset($_GET['lat']) && is_numeric($_GET['lng']) && is_numeric($_GET['lat'])) {
+				$lng = floatval($_GET['lng']);
+				$lat = floatval($_GET['lat']);
+				$radius = (isset($_GET['radius']) && is_numeric($_GET['radius'])) ? floatval($_GET['radius']) : 10;
+				if($lng >= -180 && $lng <= 180 && $lat >= -90 && $lat <= 90) {
+					$where .= " AND (6371*ACOS(COS(RADIANS($lat))*COS(RADIANS(`lat`))*COS(RADIANS(`lng`)-RADIANS($lng))+SIN(RADIANS($lat))*SIN(RADIANS(`lat`)))) <= $radius";
+				}
+			}
 			
 			$datas = $this->db->listinfo($where,'id desc',$_GET['page']);
 			$pages = $this->db->pages;

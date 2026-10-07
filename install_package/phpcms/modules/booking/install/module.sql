@@ -1,0 +1,1 @@
+INSERT INTO `v9_module` (`module`, `name`, `url`, `iscore`, `version`, `description`, `setting`, `listorder`, `disabled`, `installdate`, `updatedate`) VALUES ('booking', '预约管理', 'booking/', 0, '1.0', '预约管理', '', 0, 0, NOW(), NOW());

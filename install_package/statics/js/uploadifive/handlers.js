@@ -145,8 +145,10 @@ function IsImg(url){
 	var b=false;
 	var opt="jpg|gif|png|bmp|jpeg";
 	var s=opt.toUpperCase().split("|");
+	// 兼容外部URL带查询参数（如 MinIO 签名 URL .../xx.gif?X-Amz-Signature=...），先去掉?后的参数再判断扩展名
+	var u=(url||'').split('?')[0];
 	for (var i=0;i<s.length ;i++ ){
-		sTemp=url.substr(url.length-s[i].length-1);
+		sTemp=u.substr(u.length-s[i].length-1);
 		sTemp=sTemp.toUpperCase();
 		s[i]="."+s[i];
 		if (s[i]==sTemp){

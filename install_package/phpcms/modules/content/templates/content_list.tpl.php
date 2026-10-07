@@ -51,6 +51,13 @@ include $this->admin_tpl('header','admin');?>
 				
 				<input name="keyword" type="text" value="<?php if(isset($keyword)) echo $keyword;?>" class="input-text" />
 				<input type="submit" name="search" class="button" value="<?php echo L('search');?>" />
+				<br/>
+				<strong>GEO搜索：</strong>
+				地区编码：<input name="area_id" type="text" value="<?php if(isset($_GET['area_id'])) echo intval($_GET['area_id']);?>" class="input-text" style="width:60px;" />
+				经度：<input name="lng" type="text" value="<?php if(isset($_GET['lng']) && is_numeric($_GET['lng'])) echo $_GET['lng'];?>" class="input-text" style="width:80px;" />
+				纬度：<input name="lat" type="text" value="<?php if(isset($_GET['lat']) && is_numeric($_GET['lat'])) echo $_GET['lat'];?>" class="input-text" style="width:80px;" />
+				半径(km)：<input name="radius" type="text" value="<?php if(isset($_GET['radius'])) echo $_GET['radius'];?>" class="input-text" style="width:60px;" placeholder="默认10" />
+				<span style="color:#999">（地区编码精确筛选；或填写中心经纬度+半径做周边检索）</span>
 	</div>
 		</td>
 		</tr>

@@ -1,0 +1,20 @@
+# phpcms 本地运行环境 / 敏感配置 —— 不推送到仓库
+# 数据库配置(含密码)
+install_package/caches/configs/database.php
+# 存储配置(含云厂商密钥)
+install_package/caches/configs/storage.php
+install_package/caches/configs/geo.php
+# 运行时缓存(部署后自动重建)
+install_package/caches/caches_commons/
+install_package/caches/caches_search/
+install_package/caches/caches_template/
+# 错误日志
+install_package/caches/error_log.php
+# 安装锁
+install_package/caches/install.lock
+
+# phpsso 数据库配置
+install_package/phpsso_server/caches/configs/database.php
+
+# OS
+.DS_Store

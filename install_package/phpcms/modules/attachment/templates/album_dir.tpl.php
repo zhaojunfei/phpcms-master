@@ -29,15 +29,15 @@ include $this->admin_tpl('header','attachment');
 </tr>
 <?php endif;?>
 <?php 
-if(is_array($list)):
-	foreach($list as $v):
-	$filename = basename($v);
+if(is_array($items)):
+	foreach($items as $v):
+	$filename = $v['name'];
 ?>
 <tr>
-<?php if (is_dir($v)) {
-	echo '<td align="left"><img src="'.IMG_PATH.'folder-closed.gif" /> <a href="?m=attachment&c=attachments&a=album_dir&dir='.(isset($_GET['dir']) && !empty($_GET['dir']) ? stripslashes($_GET['dir']).'/' : '').$filename.'"><b>'.$filename.'</b></a></td>';
+<?php if ($v['is_dir']) {
+	echo '<td align="left"><img src="'.IMG_PATH.'folder-closed.gif" /> <a href="?m=attachment&c=attachments&a=album_dir&dir='.(isset($_GET['dir']) && !empty($_GET['dir']) && $_GET['dir']!='.' ? stripslashes($_GET['dir']).'/' : '').$filename.'"><b>'.$filename.'</b></a></td>';
 } else {
-	echo '<td align="left" onclick="javascript:album_cancel(this)"><img src="'.file_icon($filename,'gif').'" /> <a href="javascript:;" rel="'.$url.$filename.'" title="'.$filename.'">'.$filename.'</a></td>';
+	echo '<td align="left" onclick="javascript:album_cancel(this)"><img src="'.file_icon($filename,'gif').'" /> <a href="javascript:;" rel="'.$v['url'].'" title="'.$filename.'">'.$filename.'</a></td>';
 }?>
 </tr>
 <?php 

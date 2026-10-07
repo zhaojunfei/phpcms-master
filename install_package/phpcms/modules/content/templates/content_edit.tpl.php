@@ -77,6 +77,30 @@ if(is_array($forminfos['base'])) {
 <?php
 } }
 ?>
+    <tr>
+      <th width="80">GEO地区编码</th>
+      <td><input type="text" class="input-text" name="info[area_id]" id="geo_area_id" value="<?php echo isset($data['area_id']) ? intval($data['area_id']) : '';?>" size="20"/> 地区编码（可选，地图选点后自动填入，用于后台GEO搜索）</td>
+    </tr>
+    <tr>
+      <th width="80">经纬度</th>
+      <td>
+        经度：<input type="text" class="input-text" name="info[lng]" id="geo_lng" onblur="autoFillAreaCode()" value="<?php echo isset($data['lng']) ? htmlspecialchars($data['lng']) : '';?>" size="14"/>
+        纬度：<input type="text" class="input-text" name="info[lat]" id="geo_lat" onblur="autoFillAreaCode()" value="<?php echo isset($data['lat']) ? htmlspecialchars($data['lat']) : '';?>" size="14"/>
+        <input type="button" class="button" value="地图选点" onclick="openGEOPicker()"/>
+        <span id="geo_addr" style="color:#888;margin-left:6px"></span>
+        <div style="margin-top:4px;color:#999">点击「地图选点」打开地图，点击目标位置即可自动填入经纬度与地区编码。</div>
+      </td>
+    </tr>
+    <!-- 地图选点弹窗 -->
+    <tr id="geopicker_row" style="display:none">
+      <th width="80"></th>
+      <td>
+        <div style="border:1px solid #ccc;padding:4px">
+          <div style="margin-bottom:4px">在地图上点击目标位置选点：<input type="button" class="button" value="关闭" onclick="closeGEOPicker()"/></div>
+          <div id="geopicker_map" style="width:600px;height:360px"></div>
+        </div>
+      </td>
+    </tr>
 
     </tbody></table>
                 </div>
@@ -145,4 +169,69 @@ openClose.click(
 	}
 )
 //-->
+</script>
+<script type="text/javascript">
+// ===== 高德地图选点 =====
+var GEO_AMAP_KEY = "<?php
+  $_gc = array();
+  if(file_exists(CACHE_PATH.'configs/geo.php')){ $_gc = include CACHE_PATH.'configs/geo.php'; }
+  echo isset($_gc['amap_key']) ? $_gc['amap_key'] : '';
+?>";
+var GEO_SECURITY_CODE = "<?php echo isset($_gc['security_js_code']) ? $_gc['security_js_code'] : '';?>";
+if(GEO_SECURITY_CODE && typeof window._AMapSecurityConfig === 'undefined'){
+	window._AMapSecurityConfig = { securityJsCode: GEO_SECURITY_CODE };
+}
+function loadAMap(cb){
+	if(window.AMap){ cb(); return; }
+	var s = document.createElement('script');
+	s.src = 'https://webapi.amap.com/maps?v=2.0&key='+GEO_AMAP_KEY+'&plugin=AMap.Geocoder';
+	s.onload = cb; s.onerror = function(){ alert('高德地图加载失败，请检查 GEO搜索 里的 Key'); };
+	document.head.appendChild(s);
+}
+function openGEOPicker(){
+	if(!GEO_AMAP_KEY){ alert('请先在 设置→相关设置→GEO搜索 中填写高德地图 Key'); return; }
+	document.getElementById('geopicker_row').style.display = '';
+	loadAMap(function(){
+		var map = new AMap.Map('geopicker_map', {zoom:11, center:[116.397, 39.908]});
+		map.on('click', function(e){
+			var lng = e.lnglat.getLng(), lat = e.lnglat.getLat();
+			document.getElementById('geo_lng').value = lng.toFixed(6);
+			document.getElementById('geo_lat').value = lat.toFixed(6);
+			AMap.plugin('AMap.Geocoder', function(){
+				var gc = new AMap.Geocoder();
+				gc.getAddress([lng, lat], function(status, result){
+					var addr = '';
+					if(status==='complete' && result.regeocode){
+						addr = result.regeocode.formattedAddress;
+						var adcode = result.regeocode.addressComponent.adcode;
+						document.getElementById('geo_area_id').value = adcode;
+					}
+					document.getElementById('geo_addr').innerHTML = '已选：' + addr;
+					closeGEOPicker();
+				});
+			});
+		});
+	});
+}
+function closeGEOPicker(){ document.getElementById('geopicker_row').style.display='none'; }
+// 经纬度失焦后自动反查地区编码（高德逆地理编码）
+function autoFillAreaCode(){
+	var lng = document.getElementById('geo_lng').value;
+	var lat = document.getElementById('geo_lat').value;
+	var aid = document.getElementById('geo_area_id').value;
+	if(!lng || !lat || aid) return;
+	if(!GEO_AMAP_KEY) return;
+	loadAMap(function(){
+		AMap.plugin('AMap.Geocoder', function(){
+			var gc = new AMap.Geocoder();
+			gc.getAddress([parseFloat(lng), parseFloat(lat)], function(status, result){
+				if(status==='complete' && result.regeocode){
+					var adcode = result.regeocode.addressComponent.adcode;
+					if(adcode){ document.getElementById('geo_area_id').value = adcode; }
+					document.getElementById('geo_addr').innerHTML = '地区编码已自动填入：' + adcode;
+				}
+			});
+		});
+	});
+}
 </script>

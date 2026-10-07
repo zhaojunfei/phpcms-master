@@ -10,7 +10,7 @@ return array(
 //Cookie配置
 'cookie_domain' => '', //Cookie 作用域
 'cookie_path' => '', //Cookie 作用路径
-'cookie_pre' => 'CMPkO_', //Cookie 前缀，同一域名下安装多套系统时，请修改Cookie前缀
+'cookie_pre' => 'sYheU_', //Cookie 前缀，同一域名下安装多套系统时，请修改Cookie前缀
 'cookie_ttl' => 0, //Cookie 生命周期，0 表示随浏览器进程
 //模板相关配置
 'tpl_root' => 'templates/', //模板保存物理路径
@@ -21,13 +21,56 @@ return array(
 
 //附件相关配置
 'upload_path' => PHPCMS_PATH.'uploadfile/',
-'upload_url' => 'http://v9.phpcms.cn/uploadfile/', //附件路径
+'upload_url' => 'http://localhost:8080/uploadfile/', //附件路径
 'attachment_stat' => '1',//是否记录附件使用状态 0 统计 1 统计， 注意: 本功能会加重服务器负担
 
-'js_path' => 'http://v9.phpcms.cn/statics/js/', //CDN JS
-'css_path' => 'http://v9.phpcms.cn/statics/css/', //CDN CSS
-'img_path' => 'http://v9.phpcms.cn/statics/images/', //CDN img
-'app_path' => 'http://v9.phpcms.cn/',//动态域名配置地址
+//附件存储配置（多驱动）
+//driver 可选：disk（磁盘，默认）/ minio（MinIO）/ oss（阿里云OSS）/ cos（腾讯云COS）/ qiniu（七牛）
+//远程存储（minio/oss/cos/qiniu）上传后文件保存到云端，图片访问 URL 会带时效签名
+'storage' => array(
+	'driver' => 'disk',
+	//磁盘存储：留空则使用上方 upload_path / upload_url
+	'disk' => array(),
+	//MinIO（S3 兼容）
+	'minio' => array(
+		'endpoint' => 'http://127.0.0.1:9000', //MinIO 服务地址
+		'access_key' => '',
+		'secret_key' => '',
+		'bucket' => '',
+		'region' => 'us-east-1',
+		'secure' => '0', //是否 https
+	),
+	//阿里云 OSS
+	'oss' => array(
+		'endpoint' => 'oss-cn-hangzhou.aliyuncs.com', //如 oss-cn-beijing.aliyuncs.com
+		'access_id' => '',
+		'access_secret' => '',
+		'bucket' => '',
+		'is_https' => '0',
+	),
+	//腾讯云 COS
+	'cos' => array(
+		'region' => 'ap-guangzhou', //如 ap-beijing
+		'secret_id' => '',
+		'secret_key' => '',
+		'bucket' => '', //如 test-1250000000
+		'is_https' => '0',
+	),
+	//七牛云
+	'qiniu' => array(
+		'access_key' => '',
+		'secret_key' => '',
+		'bucket' => '',
+		'domain' => '', //空间访问域名（如 x.xxxx.clouddn.com）
+		'is_https' => '0',
+		'upload_host' => 'https://up.qiniup.com',
+	),
+),
+
+'js_path' => 'http://localhost:8080/statics/js/', //CDN JS
+'css_path' => 'http://localhost:8080/statics/css/', //CDN CSS
+'img_path' => 'http://localhost:8080/statics/images/', //CDN img
+'app_path' => 'http://localhost:8080/',//动态域名配置地址
 
 'charset' => 'utf-8', //网站字符集
 'timezone' => 'Etc/GMT-8', //网站时区（只对php 5.1以上版本有效），Etc/GMT-8 实际表示的是 GMT+8
@@ -35,7 +78,7 @@ return array(
 'admin_log' => 1, //是否记录后台操作日志
 'errorlog' => 1, //1、保存错误日志到 cache/error_log.php | 0、在页面直接显示
 'gzip' => 1, //是否Gzip压缩后输出
-'auth_key' => '7SLahrT8anWkl7LfOBhW', //密钥
+'auth_key' => 'zGlsM99wg8sOGtaX0yFu', //密钥
 'lang' => 'zh-cn',  //网站语言包
 'lock_ex' => '1',  //写入缓存时是否建立文件互斥锁定（如果使用nfs建议关闭）
 
@@ -44,8 +87,8 @@ return array(
 
 'phpsso' => '1',	//是否使用phpsso
 'phpsso_appid' => '1',	//应用id	
-'phpsso_api_url' => 'http://v9.phpcms.cn/phpsso_server',	//接口地址
-'phpsso_auth_key' => 'vGIDD0t8UGqkUGfHLQepqciq96vhwEQ0', //加密密钥
+'phpsso_api_url' => 'http://localhost:8080/phpsso_server',	//接口地址
+'phpsso_auth_key' => 'iLOHVGhLsu1vrzQyBpQHvpBgGULaKsVE', //加密密钥
 'phpsso_version' => '1', //phpsso版本
 
 'html_root' => '/html',//生成静态文件路径

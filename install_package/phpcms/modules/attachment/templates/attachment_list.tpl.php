@@ -69,7 +69,7 @@ if(is_array($infos)){
 <td width="20%"><img src="<?php echo file_icon($info['filename'],'gif')?>" /> <?php echo $info['filename']?> <?php echo $thumb ? '<img title="'.L('att_thumb_manage').'" src="statics/images/admin_img/havthumb.png" onclick="showthumb('.$info['aid'].', \''.new_addslashes($info['filename']).'\')"/>':''?> <?php echo $info['status'] ? '<img src="statics/images/admin_img/link.png"':''?></td>
 <td width="10%" align="center"><?php echo $this->attachment->size($info['filesize'])?></td>
 <td width="12%"  align="center"><?php echo date('Y-m-d H:i:s',$info['uploadtime'])?></td>
-<td  align="center"><a href="javascript:preview(<?php echo $info['aid']?>, '<?php echo $info['filename']?>','<?php echo $this->upload_url.$info['filepath']?>')"><?php echo L('preview')?></a> | <a href="javascript:;" onclick="att_delete(this,'<?php echo $info['aid']?>')"><?php echo L('delete')?></a></td>
+<td  align="center"><a href="javascript:preview(<?php echo $info['aid']?>, '<?php echo $info['filename']?>','<?php echo $this->attachment->get_url($info['filepath'])?>')"><?php echo L('preview')?></a> | <a href="javascript:;" onclick="att_delete(this,'<?php echo $info['aid']?>')"><?php echo L('delete')?></a></td>
 </tr>
 <?php 
 	}

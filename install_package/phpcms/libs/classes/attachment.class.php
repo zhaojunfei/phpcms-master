@@ -1,4 +1,5 @@
 <?php 
+require_once dirname(__FILE__).'/storage/storage_factory.class.php';
 class attachment {
 	var $contentid;
 	var $module;
@@ -124,6 +125,8 @@ class attachment {
 				if($watermark_enable) {
 					$image->watermark($savefile, $savefile);
 				}
+				//将文件上传到配置的存储驱动（磁盘或云端）
+				$this->_save_to_storage($savefile, $filepath);
 				$aids[] = $this->add($uploadedfile);
 			}
 		}
@@ -195,13 +198,54 @@ class attachment {
 	function delete($where) {
 		$this->att_db = pc_base::load_model('attachment_model');
 		$result = $this->att_db->select($where);
+		$storage = storage_factory::get();
+		$isRemote = !($storage instanceof disk_storage);
 		foreach($result as $r) {
-			$image = $this->upload_root.$r['filepath'];
-			@unlink($image);
-			$thumbs = glob(dirname($image).'/*'.basename($image));
-			if($thumbs) foreach($thumbs as $thumb) @unlink($thumb);
+			if($isRemote) {
+				// 云端存储：调用对应驱动删除
+				$storage->delete($r['filepath']);
+			} else {
+				$image = $this->upload_root.$r['filepath'];
+				@unlink($image);
+				$thumbs = glob(dirname($image).'/*'.basename($image));
+				if($thumbs) foreach($thumbs as $thumb) @unlink($thumb);
+			}
 		}
 		return $this->att_db->delete($where);
+	}
+	
+	/**
+	 * 将本地保存的文件上传到配置的存储驱动
+	 * 磁盘驱动：文件已位于 upload_path 下，无需额外处理
+	 * 远程驱动：上传主文件及缩略图到云端，并清理本地临时文件
+	 * @param string $savefile 本地文件绝对路径
+	 * @param string $filepath 存储中的相对路径（相对 upload_root）
+	 */
+	private function _save_to_storage($savefile, $filepath) {
+		$storage = storage_factory::get();
+		if($storage instanceof disk_storage) {
+			return true; // 磁盘驱动文件已就位
+		}
+		$storage->put($savefile, $filepath);
+		// 上传缩略图（若存在）
+		$thumb = $this->get_thumb($savefile);
+		if($thumb && file_exists($thumb)) {
+			$thumbRel = dirname($filepath).'/'.basename($thumb);
+			$storage->put($thumb, $thumbRel);
+			@unlink($thumb);
+		}
+		@unlink($savefile);
+		return true;
+	}
+	
+	/**
+	 * 获取存储文件的访问 URL
+	 * 磁盘驱动：返回静态 URL；远程驱动：返回带时效签名 URL
+	 * @param string $filepath 存储相对路径
+	 * @param int $expires 有效期（秒），默认 3600
+	 */
+	function get_url($filepath, $expires = 3600) {
+		return storage_url($filepath, $expires);
 	}
 	
 	/**
