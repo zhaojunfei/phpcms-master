@@ -1,4 +1,37 @@
 {template "content","header"}
+<?php
+/* GEO（生成式引擎优化）：输出 JSON-LD 结构化数据 + FAQ */
+$geo_db = pc_base::load_model('geoopt_model');
+$geo_conf = $geo_db->get_config();
+$geo_faqs = array();
+if ($geo_conf['faq_enable']) {
+    $geo_faqs = $geo_db->faqs_by_content($id);
+}
+$geo_url = 'http'.(isset($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=''&&$_SERVER['HTTPS']!='off'?'s':'').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$geo_pub = is_numeric($inputtime) ? date('c', $inputtime) : $inputtime;
+if ($geo_conf['schema_enable']) {
+    $geo_json = array(
+        '@context' => 'https://schema.org',
+        '@type' => 'NewsArticle',
+        'headline' => $title,
+        'description' => $description,
+        'keywords' => $keywords,
+        'datePublished' => $geo_pub,
+        'author' => array('@type' => 'Person', 'name' => $copyfrom ? $copyfrom : $geo_conf['site_name']),
+        'publisher' => array('@type' => 'Organization', 'name' => $geo_conf['site_name'], 'description' => $geo_conf['site_desc']),
+        'mainEntityOfPage' => $geo_url,
+    );
+    echo '<script type="application/ld+json">' . json_encode($geo_json, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . '</script>';
+}
+if ($geo_conf['faq_enable'] && $geo_faqs) {
+    $qe = array();
+    foreach ($geo_faqs as $f) {
+        $qe[] = array('@type' => 'Question', 'name' => $f['question'], 'acceptedAnswer' => array('@type' => 'Answer', 'text' => $f['answer']));
+    }
+    $faq_json = array('@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $qe);
+    echo '<script type="application/ld+json">' . json_encode($faq_json, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) . '</script>';
+}
+?>
 <div class="main">
 	<div class="col-left">
     	<div class="crumbs"><a href="{siteurl($siteid)}">首页</a><span> &gt; </span>{catpos($catid)} 正文</div>
@@ -161,4 +194,15 @@ $(function(){
 </script>
 
 <script language="JavaScript" src="{APP_PATH}api.php?op=count&id={$id}&modelid={$modelid}"></script>
+{if $geo_conf['faq_enable'] && $geo_faqs}
+<div id="geo_faq" style="margin-top:18px;padding:16px;background:#fff;border:1px solid #e6e6e6;border-radius:6px;">
+	<h3 style="margin:0 0 12px;font-size:16px;color:#1a7de8;">常见问题（FAQ）</h3>
+	{loop $geo_faqs $gfaq}
+	<div style="margin-bottom:10px;border-left:3px solid #1a7de8;padding-left:10px;">
+		<p style="font-weight:600;margin:0 0 4px;">Q：{$gfaq['question']}</p>
+		<p style="margin:0;color:#555;">A：{$gfaq['answer']}</p>
+	</div>
+	{/loop}
+</div>
+{/if}
 {template "content","footer"}
