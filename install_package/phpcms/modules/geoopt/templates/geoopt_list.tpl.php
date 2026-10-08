@@ -26,15 +26,17 @@
   $cls = $v['score']<40?'score-low':($v['score']<80?'score-mid':'score-high');
   $summ = $v['description'] ? mb_substr($v['description'],0,40,'utf-8') : '<span style="color:#e5484d">未设摘要</span>';
   $kws = $v['keywords'] ? $v['keywords'] : '<span style="color:#e5484d">未设关键词</span>';
-  $faq = $v['faq_count']>0 ? $v['faq_count'].' 条' : '<a href="?m=geoopt&c=admin_geoopt&a=faq_add&contentid='.$v['id'].'&pc_hash='.$_GET['pc_hash'].'" style="color:#e5484d">添加FAQ</a>';
-  $faq_link = $v['faq_count']>0 ? '?m=geoopt&c=admin_geoopt&a=faq&contentid='.$v['id'].'&pc_hash='.$_GET['pc_hash'] : $faq;
+  $faq_link = '?m=geoopt&c=admin_geoopt&a=faq&contentid='.$v['id'].'&pc_hash='.$_GET['pc_hash'];
+  $faq = $v['faq_count']>0
+      ? '<a href="'.$faq_link.'" style="color:#1a7de8">'.$v['faq_count'].' 条</a>'
+      : '<a href="'.$faq_link.'" style="color:#e5484d">添加FAQ</a>';
 ?>
 <tr>
   <td align="center"><?php echo $v['title']; ?></td>
   <td align="center"><?php echo $v['model']; ?></td>
   <td align="center"><?php echo $summ; ?></td>
   <td align="center"><?php echo $kws; ?></td>
-  <td align="center"><?php echo $faq_link; ?></td>
+  <td align="center"><?php echo $faq; ?></td>
   <td align="center"><span class="<?php echo $cls; ?>"><?php echo $v['score']; ?></span> <span class="geo-score"><i style="width:<?php echo $v['score']; ?>%;"></i></span></td>
   <td align="center"><a href="?m=geoopt&c=admin_geoopt&a=faq_add&contentid=<?php echo $v['id']; ?>&pc_hash=<?php echo $_GET['pc_hash'];?>">配FAQ</a></td>
 </tr>

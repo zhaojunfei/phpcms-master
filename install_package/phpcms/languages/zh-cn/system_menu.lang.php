@@ -466,4 +466,9 @@ $LANG['menu_demo'] = '示例模块';
 $LANG['menu_demo_add'] = '添加示例模块';
 $LANG['menu_demo_edit'] = '编辑示例模块';
 $LANG['menu_demo_delete'] = '删除示例模块';
+$LANG['menu_geoopt'] = 'GEO优化';
+$LANG['geoopt_index'] = '效果统计';
+$LANG['geoopt_list'] = '内容优化列表';
+$LANG['geoopt_faq'] = 'FAQ管理';
+$LANG['geoopt_config'] = 'GEO配置';
 ?>

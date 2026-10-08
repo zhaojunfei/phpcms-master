@@ -46,8 +46,8 @@ class geoopt_model extends model {
      */
     public function count_content($tb) {
         $sql = "SELECT COUNT(*) AS n FROM `v9_$tb`";
-        $r = $this->db->query($sql);
-        $row = $this->db->fetch_array($r);
+        $this->db->query($sql);
+        $row = $this->db->fetch_next();
         return $row ? intval($row['n']) : 0;
     }
     /**
@@ -55,8 +55,8 @@ class geoopt_model extends model {
      */
     public function count_has($tb, $field) {
         $sql = "SELECT COUNT(*) AS n FROM `v9_$tb` WHERE `$field`<>''";
-        $r = $this->db->query($sql);
-        $row = $this->db->fetch_array($r);
+        $this->db->query($sql);
+        $row = $this->db->fetch_next();
         return $row ? intval($row['n']) : 0;
     }
     /**
@@ -64,8 +64,8 @@ class geoopt_model extends model {
      */
     public function count_faq_by_model($modelid) {
         $sql = "SELECT COUNT(DISTINCT contentid) AS n FROM `v9_geo_faq` WHERE modelid='$modelid'";
-        $r = $this->db->query($sql);
-        $row = $this->db->fetch_array($r);
+        $this->db->query($sql);
+        $row = $this->db->fetch_next();
         return $row ? intval($row['n']) : 0;
     }
     /**
@@ -73,8 +73,8 @@ class geoopt_model extends model {
      */
     public function count_faq_total_by_model($modelid) {
         $sql = "SELECT COUNT(*) AS n FROM `v9_geo_faq` WHERE modelid='$modelid'";
-        $r = $this->db->query($sql);
-        $row = $this->db->fetch_array($r);
+        $this->db->query($sql);
+        $row = $this->db->fetch_next();
         return $row ? intval($row['n']) : 0;
     }
     /**
@@ -82,8 +82,8 @@ class geoopt_model extends model {
      */
     public function count_faq($contentid) {
         $sql = "SELECT COUNT(*) AS n FROM `v9_geo_faq` WHERE contentid='$contentid'";
-        $r = $this->db->query($sql);
-        $row = $this->db->fetch_array($r);
+        $this->db->query($sql);
+        $row = $this->db->fetch_next();
         return $row ? intval($row['n']) : 0;
     }
     /**
@@ -93,9 +93,9 @@ class geoopt_model extends model {
         $where = "1=1";
         if ($kw !== '') $where .= " AND (`title` LIKE '%$kw%' OR `keywords` LIKE '%$kw%')";
         $sql = "SELECT `id`,`title`,`keywords`,`description`,`inputtime` FROM `v9_$tb` WHERE $where ORDER BY `id` DESC";
-        $r = $this->db->query($sql);
+        $this->db->query($sql);
         $out = array();
-        while ($row = $this->db->fetch_array($r)) $out[] = $row;
+        while ($row = $this->db->fetch_next()) $out[] = $row;
         return $out;
     }
     /**
