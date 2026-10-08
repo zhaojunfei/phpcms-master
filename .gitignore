@@ -18,3 +18,6 @@ install_package/phpsso_server/caches/configs/database.php
 
 # OS
 .DS_Store
+# GEO/模块运行时配置
+install_package/caches/configs/modules.php
+install_package/caches/configs/geoopt.php
